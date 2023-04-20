@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTTP Request Example</title>
+  <script>
+    // Function to make HTTP request
+    function makeRequest() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://api.example.com/data", true); // Replace with your API endpoint URL
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          document.getElementById("title").innerHTML = "New Title: " + data.title; // Change h1 text dynamically
+        }
+      };
+      xhr.send();
+    }
+  </script>
+</head>
+<body>
+  <h1 id="title">HTTP Request Example</h1>
+  <p>Click the button below to make an HTTP request and change the title dynamically.</p>
+  <button onclick="makeRequest()">Make Request</button>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Renkli Yuvarlak Butonlar</title>
+  <style>
+    body {
+      background-color: #f8f8f8;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .button-container {
+      text-align: center;
+    }
+
+    .button {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      font-size: 24px;
+      color: #ffffff;
+      text-align: center;
+      line-height: 100px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: transform 0.3s ease-in-out;
+      outline: none;
+      border: none;
+      position: relative;
+    }
+
+    .button:hover {
+      transform: scale(1.1);
+    }
+
+    .button1 {
+      background-color: #ff3366; /* Kırmızı buton */
+      box-shadow: 0px 6px 10px rgba(255, 51, 102, 0.3);
+    }
+
+    .button1::before {
+      content: '\2190'; /* Sola bakan ok sembolü */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .button2 {
+      background-color: #66cc33; /* Yeşil buton */
+      box-shadow: 0px 6px 10px rgba(102, 204, 51, 0.3);
+    }
+
+    .button2::before {
+      content: '\2713'; /* Tamam sembolü */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .button3 {
+      background-color: #3366ff; /* Mavi buton */
+      box-shadow: 0px 6px 10px rgba(51, 102, 255, 0.3);
+    }
+
+    .button3::before {
+      content: '\2192'; /* Sağa bakan ok sembolü */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <button class="button button1" id="backBtn"></button>
+    <button class="button button2" id="okBtn"></button>
+    <button class="button button3" id="forwardBtn"></button>
+  </div>
+  
+  <script>
+    // Butona tıklandığında formun submit işlemini başlatan bir event listener ekleyin
+    //document.getElementById('backBtn').addEventListener('click', function(event) {
+    //  fetch('http://127.0.0.1:8000/elements/1') // Replace the URL with your desired endpoint
+    //    .then(function(response) {
+    //    if (response.ok) {
+    //      return response.json();
+    //    } else {
+    //      throw new Error('Error: ' + response.status);
+    //    }
+    //  })
+    //  .then(function(data) {
+    //    console.log('Response Data:', data); // Replace with your desired handling of the response data
+    //  })
+    //  .catch(function(error) {
+    //    console.error('Fetch Error:', error); // Replace with your desired error handling
+    //  });
+    //});
+    var ws = new WebSocket("ws://localhost:8000/ws/buttons");
+    document.getElementById('backBtn').addEventListener('click', function(event) {      
+      ws.send("trabzonspor")
+      event.preventDefault()
+      console.log("trabzonspor")
+    });
+    ws.onmessage = function(event) {
+                console.log("data geldi")
+            };
+
+    document.getElementById('okBtn').addEventListener('click', function(event) {
+      fetch('http://127.0.0.1:8000/elements/2') // Replace the URL with your desired endpoint
+        .then(function(response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Error: ' + response.status);
+        }
+      })
+      .then(function(data) {
+        console.log('Response Data:', data); // Replace with your desired handling of the response data
+      })
+      .catch(function(error) {
+        console.error('Fetch Error:', error); // Replace with your desired error handling
+      });
+    });
+
+    document.getElementById('forwardBtn').addEventListener('click', function(event) {
+      fetch('http://127.0.0.1:8000/elements/3') // Replace the URL with your desired endpoint
+        .then(function(response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Error: ' + response.status);
+        }
+      })
+      .then(function(data) {
+        console.log('Response Data:', data); // Replace with your desired handling of the response data
+      })
+      .catch(function(error) {
+        console.error('Fetch Error:', error); // Replace with your desired error handling
+      });
+    });
+  </script>
+</body>
+</html>
+

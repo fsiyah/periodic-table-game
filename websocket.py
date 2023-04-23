@@ -17,7 +17,6 @@ html = """
 <body>
     <nav class="nav">
         <a href="/" class="nav__link" data-link>Dashboard</a>
-        <a href="/posts" class="nav__link" data-link>Posts</a>
         <a href="/settings" class="nav__link" data-link>Settings</a>
         <a href="/game1" class="nav__link" data-link>Game 1</a>
         <a href="/game2" class="nav__link" data-link>Game 2</a>

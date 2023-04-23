@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chronometer</title>
+  </head>
+  <body>
+    <h1>Chronometer</h1>
+    <p id="timer">00:00:00</p>
+    <button id="start-btn">Start</button>
+    <button id="stop-btn">Stop</button>
+    <button id="reset-btn">Reset</button>
+
+    <script>
+      let timer = document.getElementById("timer");
+      let startBtn = document.getElementById("start-btn");
+      let stopBtn = document.getElementById("stop-btn");
+      let resetBtn = document.getElementById("reset-btn");
+      let startTime;
+      let elapsedTime = 0;
+      let timerInterval;
+
+      function startTimer() {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 10);
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      }
+
+      function stopTimer() {
+        clearInterval(timerInterval);
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        timer.innerHTML = "00:00:00";
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+
+      function updateTimer() {
+        elapsedTime = Date.now() - startTime;
+        let minutes = Math.floor(elapsedTime / 60000);
+        let seconds = Math.floor((elapsedTime % 60000) / 1000);
+        let milliseconds = elapsedTime % 1000;
+        timer.innerHTML =
+          (minutes < 10 ? "0" + minutes : minutes) +
+          ":" +
+          (seconds < 10 ? "0" + seconds : seconds) +
+          ":" +
+          (milliseconds < 100 ? "0" : "") +
+          (milliseconds < 10 ? "0" : "") +
+          milliseconds;
+      }
+
+      startBtn.addEventListener("click", startTimer);
+      stopBtn.addEventListener("click", stopTimer);
+      resetBtn.addEventListener("click", resetTimer);
+    </script>
+  </body>
+</html>

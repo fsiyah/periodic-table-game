@@ -9,7 +9,7 @@ export default class extends AbstractView {
     async getHtml() {
         return `
             <h1>Settings</h1>
-            <p>Manage your privacy and configuration.</p>
+            <p>Burda butonların, arduinonun ve qrın web sokete bağlı olup olmadığını gösteren iconlar koyulabilir.</p>
         `;
     }
 }

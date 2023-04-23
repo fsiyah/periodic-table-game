@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scoreboard</title>
+  </head>
+  <body>
+    <h1>Scoreboard</h1>
+    <table>
+      <tr>
+        <td>Team 1</td>
+        <td id="team1-score">0</td>
+        <td><button onclick="increaseScore(1)">+</button></td>
+        <td><button onclick="decreaseScore(1)">-</button></td>
+      </tr>
+      <tr>
+        <td>Team 2</td>
+        <td id="team2-score">0</td>
+        <td><button onclick="increaseScore(2)">+</button></td>
+        <td><button onclick="decreaseScore(2)">-</button></td>
+      </tr>
+    </table>
+
+    <script>
+      function increaseScore(team) {
+        let score = document.getElementById("team" + team + "-score");
+        score.innerHTML = parseInt(score.innerHTML) + 1;
+      }
+
+      function decreaseScore(team) {
+        let score = document.getElementById("team" + team + "-score");
+        let newScore = parseInt(score.innerHTML) - 1;
+        if (newScore < 0) {
+          newScore = 0;
+        }
+        score.innerHTML = newScore;
+      }
+    </script>
+  </body>
+</html>

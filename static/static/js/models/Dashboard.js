@@ -3,13 +3,15 @@ import AbstractView from "./AbstractView.js";
 export default class extends AbstractView {
     constructor(params) {
         super(params);
-        this.setTitle("Posts");
+        this.setTitle("Dashboard");
     }
 
     async getHtml() {
         return `
-            <h1>Posts</h1>
-            <p>You are viewing the posts!</p>
+            <h1>Welcome</h1>
+            <p>
+                Cabir bin Hayyan - periyodik tablo oyunu
+            </p>
         `;
     }
 }

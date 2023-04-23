@@ -7,77 +7,46 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 html = """
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <!--<video muted autoplay loop class="video video js-video" id="hero-vid">-->
-        <video id="myVideo" width="320" height="240" autoplay muted loop>
-            <source src="static/1.mp4" type="video/mp4">
-        </video>
-        <img id="hintImage" src="" alt="Girl in a jacket" width="320" height="240">
-        <h1>WebSocket Chat</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var elementID = 999
-            var pluggedElementID = 999
-            var hintCount = 1
-            var MAX_HINT_COUNT = 5
-
-            var ws = new WebSocket("ws://localhost:8000/ws/home");
-            ws.onmessage = function(event) {
-                console.log("Message Received")
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                console.log(content)
-                message.appendChild(content)
-                messages.appendChild(message)                
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-
-            var wsQr = new WebSocket("ws://localhost:8000/ws/deneme");
-            wsQr.onmessage = function(event) {
-                elementID = event.data
-                var string = String(event.data)
-                console.log("QR" + string)
-                var video = document.getElementById("myVideo");  
-                video.src = "static/"+string+".mp4"; 
-                video.load(); 
-            };
-
-            var wsArduino = new WebSocket("ws://localhost:8000/ws/arduinoWS");
-            wsArduino.onmessage = function(event) {
-                pluggedElementID = event.data
-                var string = String(event.data)
-                console.log("ARDUINO: " + string)
-                if(elementID != pluggedElementID && hintCount<=MAX_HINT_COUNT)
-                {
-                    var image = document.getElementById("hintImage");   
-                    image.src = "static/hints/"+String(elementID)+"-"+String(hintCount)+".png";
-                    hintCount = hintCount+1 
-                }
-            };
-        </script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Page App (Vanilla JS)</title>
+    <link rel="stylesheet" href="/static/static/css/index.css">
+</head>
+<body>
+    <nav class="nav">
+        <a href="/" class="nav__link" data-link>Dashboard</a>
+        <a href="/posts" class="nav__link" data-link>Posts</a>
+        <a href="/settings" class="nav__link" data-link>Settings</a>
+        <a href="/game1" class="nav__link" data-link>Game 1</a>
+        <a href="/game2" class="nav__link" data-link>Game 2</a>
+        <a href="/game3" class="nav__link" data-link>Game 3</a>
+    </nav>
+    <div id="app"></div>
+    <script type="module" src="/static/static/js/index.js"></script>
+</body>
 </html>
 """
 
+with open("game1.html") as fh:
+        game1 = fh.read()
+with open("game1.html") as fh:
+        game1 = fh.read()
+with open("game1.html") as fh:
+        game1 = fh.read()
 
+@app.get("/", response_class=HTMLResponse)
+async def get():
+    with open("game1.html") as fh:
+        game = fh.read()
+    return HTMLResponse(content=html, media_type="text/html")
+
+'''
 @app.get("/")
 async def get():
     return HTMLResponse(html)
+'''
 
 
 #connections = list()
@@ -123,6 +92,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_text()
         await connections["home"].send_text(f"Message from buttons: {data}")
+        await connections["buttonsWS"].send_text(f"{data}")
 
 @app.websocket("/ws/qr")
 async def websocket_endpoint(websocket: WebSocket):
@@ -161,3 +131,12 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_text()
         await connections["arduinoWS"].send_text(f"Message from arduino: {data}")
+
+@app.websocket("/ws/buttonsWS")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    connections["buttonsWS"] = websocket
+    print("buttonsWS is connected")
+    while True:
+        data = await websocket.receive_text()
+        await connections["buttonsWS"].send_text(f"Message from buttons: {data}")

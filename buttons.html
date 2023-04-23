@@ -103,14 +103,27 @@
     //});
     var ws = new WebSocket("ws://localhost:8000/ws/buttons");
     document.getElementById('backBtn').addEventListener('click', function(event) {      
-      ws.send("trabzonspor")
+      ws.send("back")
       event.preventDefault()
-      console.log("trabzonspor")
+      console.log("back")
+    });
+    var ws = new WebSocket("ws://localhost:8000/ws/buttons");
+    document.getElementById('okBtn').addEventListener('click', function(event) {      
+      ws.send("ok")
+      event.preventDefault()
+      console.log("ok")
+    });
+    var ws = new WebSocket("ws://localhost:8000/ws/buttons");
+    document.getElementById('forwardBtn').addEventListener('click', function(event) {      
+      ws.send("forward")
+      event.preventDefault()
+      console.log("forward")
     });
     ws.onmessage = function(event) {
                 console.log("data geldi")
             };
 
+    /*
     document.getElementById('okBtn').addEventListener('click', function(event) {
       fetch('http://127.0.0.1:8000/elements/2') // Replace the URL with your desired endpoint
         .then(function(response) {
@@ -144,6 +157,7 @@
         console.error('Fetch Error:', error); // Replace with your desired error handling
       });
     });
+    */
   </script>
 </body>
 </html>

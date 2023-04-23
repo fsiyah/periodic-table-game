@@ -78,24 +78,9 @@ var isButtonsActive = false
 var infoCount = 1
 var MAX_INFO_COUNT = 5
 
-var ws = new WebSocket("ws://localhost:8000/ws/home");
-ws.onmessage = function(event) {
-    console.log("Message Received")
-    var messages = document.getElementById('messages')
-    var message = document.createElement('li')
-    var content = document.createTextNode(event.data)
-    console.log(content)
-    message.appendChild(content)
-    messages.appendChild(message)                
-};
-function sendMessage(event) {
-    var input = document.getElementById("messageText")
-    ws.send(input.value)
-    input.value = ''
-    event.preventDefault()
-}
+var gameMode = 1
 
-var wsQr = new WebSocket("ws://localhost:8000/ws/deneme");
+var wsQr = new WebSocket("ws://localhost:8000/ws/qrWS");
 wsQr.onmessage = function(event) {
     elementID = event.data
     var string = String(event.data)
@@ -103,6 +88,12 @@ wsQr.onmessage = function(event) {
     var video = document.getElementById("myVideo");  
     video.src = "static/"+string+".mp4"; 
     video.load(); 
+
+    //Reset states
+    document.getElementById("hintImage").src = "";
+    document.getElementById("infoImage").src = "";
+    hintCount = 1
+    infoCount = 1
 };
 
 var wsArduino = new WebSocket("ws://localhost:8000/ws/arduinoWS");
@@ -147,9 +138,31 @@ wsButtons.onmessage = function(event) {
     {
         infoCount = infoCount-1 
     }
-    if(isButtonsActive && string=="forward" && infoCount<MAX_INFO_COUNT)
+    else if(isButtonsActive && string=="forward" && infoCount<MAX_INFO_COUNT)
     {                    
         infoCount = infoCount+1 
+    }
+    else if(string=="ok" && gameMode<MAX_INFO_COUNT)
+    {                 
+        if(gameMode == 1) 
+        {
+            navigateTo("/game2");
+            router()
+            gameMode = gameMode+1 
+        }
+        else if(gameMode == 2) 
+        { 
+            navigateTo("/game3");
+            router()
+            gameMode = gameMode+1 
+        }  
+        else if(gameMode == 3) 
+        {
+            navigateTo("/game1");
+            router()
+            gameMode = 1 
+        }  
+        
     }
     else
     {

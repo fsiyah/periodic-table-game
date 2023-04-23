@@ -29,17 +29,8 @@ html = """
 </html>
 """
 
-with open("game1.html") as fh:
-        game1 = fh.read()
-with open("game1.html") as fh:
-        game1 = fh.read()
-with open("game1.html") as fh:
-        game1 = fh.read()
-
 @app.get("/", response_class=HTMLResponse)
 async def get():
-    with open("game1.html") as fh:
-        game = fh.read()
     return HTMLResponse(content=html, media_type="text/html")
 
 '''
@@ -66,24 +57,6 @@ async def get():
 
 connections = dict()
 
-@app.websocket("/ws/home")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    connections["home"] = websocket
-    print("home is connected")
-    while True:
-        data = await websocket.receive_text()
-        await connections["home"].send_text(f"Message from home: {data}")
-
-@app.websocket("/ws/home/{element_id}")
-async def websocket_endpoint(element_id, websocket: WebSocket):
-    await websocket.accept()
-    connections["home"] = websocket
-    print("home is connected")
-    while True:
-        data = await websocket.receive_text()
-        await connections["home"].send_text(f"Message from home: {data}")
-
 @app.websocket("/ws/buttons")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -91,7 +64,6 @@ async def websocket_endpoint(websocket: WebSocket):
     print("buttons are connected")
     while True:
         data = await websocket.receive_text()
-        await connections["home"].send_text(f"Message from buttons: {data}")
         await connections["buttonsWS"].send_text(f"{data}")
 
 @app.websocket("/ws/qr")
@@ -101,8 +73,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print("qr reader are connected")
     while True:
         data = await websocket.receive_text()
-        await connections["home"].send_text(f"Message from qr: {data}") 
-        await connections["deneme"].send_text(f"{data}")
+        await connections["qrWS"].send_text(f"{data}")
 
 @app.websocket("/ws/arduino")
 async def websocket_endpoint(websocket: WebSocket):
@@ -111,17 +82,16 @@ async def websocket_endpoint(websocket: WebSocket):
     print("arduino reader are connected")
     while True:
         data = await websocket.receive_text()
-        await connections["home"].send_text(f"Message from arduino: {data}")
         await connections["arduinoWS"].send_text(f"{data}")
 
-@app.websocket("/ws/deneme")
+@app.websocket("/ws/qrWS")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    connections["deneme"] = websocket
-    print("deneme is connected")
+    connections["qrWS"] = websocket
+    print("qrWS is connected")
     while True:
         data = await websocket.receive_text()
-        await connections["deneme"].send_text(f"Message from arduino: {data}")
+        await connections["qrWS"].send_text(f"Message from arduino: {data}")
 
 @app.websocket("/ws/arduinoWS")
 async def websocket_endpoint(websocket: WebSocket):

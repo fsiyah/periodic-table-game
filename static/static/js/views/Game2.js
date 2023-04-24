@@ -11,6 +11,9 @@ export default class extends AbstractView {
             <h1>Game2</h1> 
             <table>
                 <tr>
+                    <td>Round: </td>
+                    <td id="round-number">1</td>
+                    <td> | </td>
                     <td>Current Player: </td>
                     <td id="current-player">-</td>
                 </tr>

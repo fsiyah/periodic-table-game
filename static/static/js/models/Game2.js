@@ -34,16 +34,10 @@ function qrWS(event) {
     var video = document.getElementById("myVideo");  
     video.src = "static/"+string+".mp4"; 
     video.load(); 
-    if(currentPlayer == "teamTwo")
-    {
-        updateCurrentPlayer("teamTwo")
-    }
-    else
-    {
-        updateCurrentPlayer("teamOne")
-    }
-    resetTimer()
     startTimer()
+
+    updateCurrentPlayer(currentPlayer)
+    isButtonsActive = false
 
     //Reset states
     document.getElementById("hintImage").src = "";
@@ -60,85 +54,56 @@ function arduinoWS(event) {
     {
         var image = document.getElementById("hintImage");   
         image.src = "static/hints/"+String(elementID)+"-"+String(hintCount)+".png";
-        hintCount = hintCount+1 
+        hintCount = hintCount+1         
+    }
+    else if(elementID == pluggedElementID || hintCount > MAX_HINT_COUNT)
+    {
+        console.log("Doğru Bildin ya da ipucu hakların bitti")
+        stopTimer()    
+        isButtonsActive = true
+        var image = document.getElementById("infoImage");   
+        image.src = "static/infos/"+String(elementID)+"-"+String(infoCount)+".png";
+
+        if(currentPlayer == "teamTwo")
+        {
+            teamTwoRoundTime = Date.now() - startTime
+            updateTeamTime(2, teamTwoRoundTime)
+            currentPlayer = "teamOne"
+            roundCounter = roundCounter+1
+            resetTimer()
+        }
+        else
+        {
+            teamOneRoundTime = Date.now() - startTime
+            updateTeamTime(1, teamOneRoundTime)
+            currentPlayer = "teamTwo"
+            roundCounter = roundCounter+1
+            resetTimer()
+        }
         
-    }
-    else if(hintCount>MAX_HINT_COUNT)
-    {
-        console.log("Doğru cevap bu idi")
-        isButtonsActive = true
-        var image = document.getElementById("infoImage");   
-        image.src = "static/infos/"+String(elementID)+"-"+String(infoCount)+".png";
-        stopTimer()
-        if(currentPlayer == "teamTwo")
-        {
-            teamTwoRoundTime = Date.now() - startTime
-            updateTeamTime(2, teamTwoRoundTime)
-            currentPlayer = "teamOne"
-            resetTimer()
+        if(roundCounter == 2) {
+            isRoundEnded = true
+            roundCounter = 0
         }
-        else
-        {
-            teamOneRoundTime = Date.now() - startTime
-            updateTeamTime(1, teamOneRoundTime)
-            currentPlayer = "teamTwo"
-            resetTimer()
-        }
-        roundCounter = roundCounter+1
-        if(roundCounter == 2) {isRoundEnded=true}
+
         if(isRoundEnded)
         {
-            if(teamOneRoundTime<teamTwoRoundTime)
+            if(teamOneRoundTime < teamTwoRoundTime)
             {
                 increaseScore(1)
             }
-            else if(teamOneRoundTime>teamTwoRoundTime)
+            else if(teamOneRoundTime > teamTwoRoundTime)
             {
                 increaseScore(2)
             }
-            roundCounter = 0
-        }
-    }
-    else if(elementID == pluggedElementID)
-    {
-        console.log("Doğru Bildin")
-        isButtonsActive = true
-        var image = document.getElementById("infoImage");   
-        image.src = "static/infos/"+String(elementID)+"-"+String(infoCount)+".png";
-        stopTimer()
-        if(currentPlayer == "teamTwo")
-        {
-            teamTwoRoundTime = Date.now() - startTime
-            updateTeamTime(2, teamTwoRoundTime)
-            currentPlayer = "teamOne"
-            resetTimer()
-        }
-        else
-        {
-            teamOneRoundTime = Date.now() - startTime
-            updateTeamTime(1, teamOneRoundTime)
-            currentPlayer = "teamTwo"
-            resetTimer()
-        }
-        roundCounter = roundCounter+1
-        if(roundCounter == 2) {isRoundEnded=true}
-        if(isRoundEnded)
-        {
-            if(teamOneRoundTime<teamTwoRoundTime)
-            {
-                increaseScore(1)
-            }
-            else if(teamOneRoundTime>teamTwoRoundTime)
-            {
-                increaseScore(2)
-            }
-            roundCounter = 0
-        }
+            increaseRoundNumber()
+            isRoundEnded = false
+        }    
     }
     else
     {
         console.log("Something went wrong: Arduino web socket")
-    }
+    }    
 };
 
 function buttonsWS(event) {
@@ -228,9 +193,19 @@ let score = document.getElementById("team" + team + "-time");
 score.innerHTML = time;
 }
 
-function updateCurrentPlayer(team) {
+function updateCurrentPlayer(player) {
 let currentPlayer = document.getElementById("current-player");
-currentPlayer.innerHTML = team;
+currentPlayer.innerHTML = player;
+}
+
+function increaseRoundNumber() {
+let currentRound = document.getElementById("round-number");
+currentRound.innerHTML = parseInt(currentRound.innerHTML) + 1;
+}
+
+function resetRoundNumber() {
+let currentRound = document.getElementById("round-number");
+currentRound.innerHTML = 1;
 }
 
 
